@@ -4,13 +4,17 @@ import { LoginQ } from "../Queries/mutations";
 import { useRef } from "react";
 
 export default function Login() {
-  const [loginMutation, { data, error, loading }] = useMutation(LoginQ);
+  const [loginMutation, { data, error, loading }] = useMutation(LoginQ, {
+    errorPolicy: "all",
+  });
   const emailInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleLogin = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
-    loginMutation({
+    await loginMutation({
       variables: {
         email: emailInput.current?.value,
         password: passwordInput.current?.value,
@@ -18,10 +22,10 @@ export default function Login() {
     });
   };
 
-  if (error) {
-    console.log(error);
-  } else if (data) {
+  if (data) {
     console.log(data);
+  } else if (error) {
+    console.log(error);
   }
 
   return (
@@ -59,12 +63,6 @@ export default function Login() {
             Not a member? <span>Signup now</span>
           </p>
         </div>
-        <pre>
-          Bad:{" "}
-          {error?.graphQLErrors.map(({ message }, i) => (
-            <span key={i}>{message}</span>
-          ))}
-        </pre>
       </div>
     </div>
   );
