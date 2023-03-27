@@ -1,5 +1,5 @@
 import "./css/login.css";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { LoginQ } from "../Queries/mutations";
 import { useRef } from "react";
 
@@ -7,6 +7,7 @@ export default function Login() {
   const [loginMutation, { data, error, loading }] = useMutation(LoginQ, {
     errorPolicy: "all",
   });
+
   const emailInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
 
@@ -14,18 +15,31 @@ export default function Login() {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    await loginMutation({
+
+    const value = await loginMutation({
       variables: {
         email: emailInput.current?.value,
         password: passwordInput.current?.value,
       },
+      onError: ({ graphQLErrors, networkError }) => {
+        graphQLErrors.forEach(({ message, locations, path }) =>
+          console.log(
+            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+          )
+        );
+        if (networkError) console.log(`[Network error]: ${networkError}`);
+      },
     });
+
+    console.log(value);
   };
+
+  if (error) {
+    console.log(error.graphQLErrors);
+  }
 
   if (data) {
     console.log(data);
-  } else if (error) {
-    console.log(error);
   }
 
   return (
@@ -34,7 +48,7 @@ export default function Login() {
         <h1 className="heading-primary">Login Form</h1>
         <form className="loginForm" onSubmit={handleLogin}>
           <div className="formGroup">
-            <label className="inputTitle" htmlFor="">
+            <label className="inputTitle" htmlFor="email">
               Email
             </label>
             <input
@@ -42,19 +56,14 @@ export default function Login() {
               ref={emailInput}
               required
               placeholder="Write your Email"
-              name="email"
+              id="email"
             />
           </div>
           <div className="formGroup">
-            <label className="inputTitle" htmlFor="">
+            <label className="inputTitle" htmlFor="password">
               Password
             </label>
-            <input
-              ref={passwordInput}
-              type="password"
-              required
-              name="password"
-            />
+            <input ref={passwordInput} type="password" required id="password" />
           </div>
           <button type="submit">Login</button>
         </form>

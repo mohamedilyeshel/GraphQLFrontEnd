@@ -5,7 +5,7 @@ import App from "./App";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: "https://localhost:7272/todolist/",
+  uri: "https://localhost:7272/todolist",
   cache: new InMemoryCache(),
 });
 
