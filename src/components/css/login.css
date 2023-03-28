@@ -84,3 +84,22 @@
     color: #000000;
     text-decoration: underline;
 }
+
+.loginForm button:disabled {
+    background-color: #ccc;
+    cursor: default;
+}
+
+.loginForm button:disabled:hover {
+    background-color: #ccc;
+}
+
+.errorSection {
+    padding: 2rem 1.2rem;
+    margin-bottom: 3.2rem;
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    font-size: 1.3rem;
+    border-radius: 0.3rem;
+}
