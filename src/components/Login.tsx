@@ -2,6 +2,7 @@ import "./css/login.css";
 import { useMutation } from "@apollo/client";
 import { LoginQ } from "../Queries/mutations";
 import { useRef } from "react";
+import ErrorComponent from "./sharedComponents/ErrorComponent";
 
 export default function Login() {
   const [loginMutation, { data, loading }] = useMutation(LoginQ);
@@ -30,10 +31,11 @@ export default function Login() {
     <div className="containerFull">
       <div className="loginBlock">
         <h1 className="heading-primary">Login Form</h1>
-        {data?.login.errors && (
-          <div className="errorSection">
-            <p>{data.login.errors.message}</p>
-          </div>
+        {data?.login && (
+          <ErrorComponent
+            message={data.login.errors?.message || "Logged in Successfuly"}
+            isNotError={!data?.login.errors}
+          />
         )}
         <form className="loginForm" onSubmit={handleLogin}>
           <div className="formGroup">
